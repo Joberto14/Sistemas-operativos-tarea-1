@@ -3,6 +3,7 @@
 using namespace std;
 
 int main(){
-    cout << "Soy el observador!" << endl;
+    printf("Soy el observador\n");
+    exit(0);
     return 0;
 }

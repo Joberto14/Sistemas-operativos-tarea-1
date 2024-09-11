@@ -11,9 +11,7 @@ int main() {
     int signal;
 
     fd = open(fifo_path, O_RDONLY);
-    for (int i = 0; i < 2; i++)
-    {
-        read(fd, &signal, sizeof(signal));
+    while (read(fd, &signal, sizeof(signal)) > 0){
 
         if (signal == 1) {
             printf("¡Hola, uwu!\n");
