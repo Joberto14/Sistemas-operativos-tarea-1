@@ -10,6 +10,12 @@
 
 using namespace std;
 
+volatile sig_atomic_t signal_received = 0;
+
+void signal_handler(int signum) {
+    signal_received = 1;
+}
+
 int main(int argc, char *argv[]) {
     key_t key = 69420;  // Clave para la memoria compartida
     
@@ -27,6 +33,13 @@ int main(int argc, char *argv[]) {
         std::cerr << "Error al adjuntar la memoria compartida\n";
         exit(1);
     }
+
+    signal(SIGUSR1, signal_handler);
+
+    while (!signal_received);
+
+    signal_received = 0;
+
     int voto = rand() % N;
     printf("Jugador %d ha votado por jugador %d\n", getpid(), jugadores[voto]);
 

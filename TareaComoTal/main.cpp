@@ -28,9 +28,9 @@ int main( int argc, char *argv[] ) {
         exit(1);
     }
 
+    string observador = "g++ -o observador observador.cpp && ./observador " + to_string(N) + " &"; 
 
-
-    // system("g++ -o observador observador.cpp && ./observador &"); // ejecuta observador independientemente
+    system(observador.c_str()); // ejecuta observador independientemente
     
     
     
