@@ -32,20 +32,17 @@ int main( int argc, char *argv[] ) {
 
     // system("g++ -o observador observador.cpp && ./observador &"); // ejecuta observador independientemente
     
-    pid_t pid = 1;
+    
     
     cout << "Bienvenido al juego de la silla!" << endl;
     cout << "Se han unido " << N << " jugadores." << endl;
     
 
 
-    for(int i = 0; i < N+1; i++){
-        if(pid > 0){
-            pid = fork();
-            if(pid > 0){
-                jugadores[i] = pid;
-                cout << "Jugador " << jugadores[i] << " ha entrado al juego." << endl;
-            }
+    for(int i = 0; i < N; i++){
+        if(pid_t pid = fork(); pid > 0){
+            jugadores[i] = pid;
+            cout << "Jugador " << jugadores[i] << " ha entrado al juego." << endl;
         }
         else if(pid == 0){
             string aux = to_string(N);
