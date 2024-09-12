@@ -42,19 +42,29 @@ int main( int argc, char *argv[] ) {
     for(int i = 0; i < N+1; i++){
         if(pid > 0){
             pid = fork();
-            jugadores[i] = pid;
+            if(pid > 0){
+                jugadores[i] = pid;
+                cout << "Jugador " << jugadores[i] << " ha entrado al juego." << endl;
+            }
         }
         else if(pid == 0){
             string aux = to_string(N);
-            execlp("./jugador", "./jugador", aux, NULL);
+            
+            execl("./jugador", "jugador", aux.c_str(), NULL);
+            perror("Error en execl");  // Manejar error si execl falla
+            exit(1);
         }
         else{
             cout << "Error al crear proceso hijo" << endl;
+            exit(1);
         }
     }
 
     
-
+    if (shmdt(jugadores) == -1) {
+        perror("Error al desadjuntar la memoria compartida");
+        exit(1);
+    }
 
     return 0;
 }

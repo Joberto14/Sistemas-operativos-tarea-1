@@ -4,7 +4,7 @@
 #include <sys/wait.h>
 #include <cstdlib>
 #include <stdlib.h>
-#include <time.h> 
+#include <ctime> 
 #include <sys/ipc.h>
 #include <sys/shm.h>
 
@@ -21,19 +21,19 @@ int main(int argc, char *argv[]) {
 
     // int tiempo_de_juego = rand() % 10 + 1;  // observador 
 
-    printf("existo\n");
     int shmid = shmget(key, N * sizeof(int), 0666 );
-    printf("existo\n");
     int* jugadores = static_cast<int*>(shmat(shmid, nullptr, 0));
     if (jugadores == (void*)-1) {
         std::cerr << "Error al adjuntar la memoria compartida\n";
         exit(1);
     }
-    printf("existo\n");
     int voto = rand() % N;
-    printf("existo\n");
     printf("Jugador %d ha votado por jugador %d\n", getpid(), jugadores[voto]);
-    printf("existo\n");
+
+    if (shmdt(jugadores) == -1) {
+        perror("Error al desadjuntar la memoria compartida");
+        exit(1);
+    }
 
     exit(0);
     return 0;
