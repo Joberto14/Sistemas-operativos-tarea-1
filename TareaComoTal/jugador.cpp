@@ -7,6 +7,8 @@
 #include <ctime> 
 #include <sys/ipc.h>
 #include <sys/shm.h>
+#include <fcntl.h>
+#include <sys/stat.h>
 
 using namespace std;
 
@@ -17,6 +19,11 @@ void signal_handler(int signum) {
 }
 
 int main(int argc, char *argv[]) {
+
+    const string fifo_path = "./my_fifo" + to_string(getpid());
+    int fd;
+    
+
     key_t key = 69420;  // Clave para la memoria compartida
     
     int N = atoi(argv[1]);
@@ -41,12 +48,33 @@ int main(int argc, char *argv[]) {
     signal_received = 0;
 
     int voto = rand() % N;
+
     printf("Jugador %d ha votado por jugador %d\n", getpid(), jugadores[voto]);
+
+    if (access(fifo_path.c_str(), F_OK) == -1) {
+        // El archivo no existe, crear el FIFO
+        if (mkfifo(fifo_path.c_str(), 0666) == -1) {
+            perror("Error al crear el FIFO");
+            exit(1);
+        }
+    }
+
+    fd = open(fifo_path.c_str(), O_WRONLY);
+
+    if (fd == -1){
+        perror("Error al abrir el fifo para escribir");
+        exit(1);
+    }
+    write(fd, &jugadores[voto], sizeof(jugadores[voto]));    
 
     if (shmdt(jugadores) == -1) {
         perror("Error al desadjuntar la memoria compartida");
         exit(1);
     }
+
+    close(fd);
+
+    unlink(fifo_path.c_str());
 
     exit(0);
     return 0;
