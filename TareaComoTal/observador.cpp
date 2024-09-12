@@ -70,6 +70,8 @@ int main(int argc, char *argv[]) {
         }
     }
     cout << "El jugador " << max_signal << " se va amurrar :(" << endl;
+    pid_t pid = max_signal;
+    kill(pid, SIGUSR2);
 
 
 

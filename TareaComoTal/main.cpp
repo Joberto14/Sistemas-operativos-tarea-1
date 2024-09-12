@@ -58,6 +58,8 @@ int main( int argc, char *argv[] ) {
         }
     }
 
+    system("g++ -o amurrar amurrar.cpp");
+
     
     if (shmdt(jugadores) == -1) {
         perror("Error al desadjuntar la memoria compartida");

@@ -13,12 +13,18 @@
 using namespace std;
 
 volatile sig_atomic_t signal_received = 0;
+volatile sig_atomic_t amurrar = 0;
 
 void signal_handler(int signum) {
     signal_received = 1;
 }
 
+void amurrar_handler(int signum) {
+    execl("./amurrar", "amurrar", "" , NULL);
+}
+
 int main(int argc, char *argv[]) {
+    
 
     const string fifo_path = "./my_fifo" + to_string(getpid());
     int fd;
@@ -66,6 +72,10 @@ int main(int argc, char *argv[]) {
         exit(1);
     }
     write(fd, &jugadores[voto], sizeof(jugadores[voto]));    
+
+    signal(SIGUSR2, amurrar_handler);
+    
+    pause();
 
     if (shmdt(jugadores) == -1) {
         perror("Error al desadjuntar la memoria compartida");
