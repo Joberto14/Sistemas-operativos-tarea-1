@@ -6,28 +6,48 @@
 #include <sys/ipc.h>
 #include <sys/shm.h> 
 #include <sys/stat.h>
+#include <cstring>
 
 using namespace std;
 
 int main( int argc, char *argv[] ) {
     system("g++ -o jugador jugador.cpp");
     int N = atoi(argv[1]);
-    
-    key_t key = 69420;  // Clave para la memoria compartida
+    // arreglo de jugadores en memoria compartida
+    key_t key = 69420;  // Clave para la memoria compartida de los jugadores
 
     // Crear un segmento de memoria compartida de tamaño N * sizeof(int)
     int shmid = shmget(key, N * sizeof(int), 0666 | IPC_CREAT);
 
     if (shmid == -1) {
-        std::cerr << "Error al crear la memoria compartida\n";
+        std::cerr << "Error al crear el arreglo en memoria compartida\n";
         exit(1);
     }
 
     int* jugadores = static_cast<int*>(shmat(shmid, nullptr, 0));
     if (jugadores == (void*)-1) {
+        std::cerr << "Error al adjuntar la memoria compartida de los jugadores\n";
+        exit(1);
+    }
+
+    // arreglo de eliminados en memoria compartida
+    key_t keyelm = 666;  // Clave para la memoria compartida de los eliminados
+
+    // Crear un segmento de memoria compartida de tamaño N * sizeof(int)
+    int shmidelim = shmget(keyelm, (N-1) * sizeof(int), 0666 | IPC_CREAT);
+
+    if (shmidelim == -1) {
+        std::cerr << "Error al crear el arreglo en memoria compartida de los eliminados\n";
+        exit(1);
+    }
+
+    int* eliminados = static_cast<int*>(shmat(shmidelim, nullptr, 0));
+    if (eliminados == (void*)-1) {
         std::cerr << "Error al adjuntar la memoria compartida\n";
         exit(1);
     }
+
+    memset(eliminados, 0, (N-1) * sizeof(int));
 
     string observador = "g++ -o observador observador.cpp && ./observador " + to_string(N) + " &"; 
 

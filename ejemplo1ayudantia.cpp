@@ -8,7 +8,7 @@
 #include <unistd.h>  
 
 int main() {
-    const char *fifo_path = "./my_fifo";
+    const char *fifo_path = "/tmp/my_fifo";
     int fd;
     int signal;
     pid_t p;

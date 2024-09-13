@@ -12,7 +12,7 @@ using namespace std;
 int main(int argc, char *argv[]) {
     
     int N = getpid();
-    cout  << "Soy el proceso: " << N << ", vayanse a la @*/-'Ñ, me amurre" << endl;
+    cout  << "Soy el proceso: " << N << ", me amurre con exec" << endl;
 
     exit(0);
 
