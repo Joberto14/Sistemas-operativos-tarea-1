@@ -22,18 +22,18 @@ int main(int argc, char *argv[]) {
     int cantidad_jugadores = N;
     while(cantidad_jugadores > 1){
 
-        key_t key = 69420;  // Clave para la memoria compartida de jugadores
+        key_t key = ftok("/tmp", 'J');  // Clave para la memoria compartida de jugadores
 
         int shmid = shmget(key, N * sizeof(int), 0666 );
 
         int* jugadores = static_cast<int*>(shmat(shmid, nullptr, 0));
         if (jugadores == (void*)-1) {
-            std::cerr << "Error al adjuntar la memoria compartida\n";
+            std::cerr << "Error al adjuntar la memoria compartida en\n";
             exit(1);
         }
 
         // arreglo de eliminados en memoria compartida
-        key_t keyelm = 666;  // Clave para la memoria compartida de los eliminados
+        key_t keyelm = ftok("/tmp", 'B');  // Clave para la memoria compartida de los eliminados
 
         // Crear un segmento de memoria compartida de tamaño N * sizeof(int)
         int shmidelim = shmget(keyelm, (N-1) * sizeof(int), 0666);

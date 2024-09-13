@@ -29,7 +29,7 @@ void amurrar_handler(int signum) {
 int main(int argc, char *argv[]) {
     int N = atoi(argv[1]);
     
-    key_t key = 69420;  // Clave para la memoria compartida
+    key_t key = ftok("/tmp", 'J');  // Clave para la memoria compartida
     
     // Segmento de memoria compartida de jugadores
     int shmid = shmget(key, N * sizeof(int), 0666 );
@@ -41,7 +41,7 @@ int main(int argc, char *argv[]) {
         exit(1);
     }
     
-    key_t keyelm = 666;  // Clave para la memoria compartida de los eliminados
+    key_t keyelm = ftok("/tmp", 'B');  // Clave para la memoria compartida de los eliminados
 
     // Crear un segmento de memoria compartida de tamaño (N-1) * sizeof(int)
     int shmidelim = shmget(keyelm, (N-1) * sizeof(int), 0666);

@@ -14,13 +14,13 @@ int main( int argc, char *argv[] ) {
     system("g++ -o jugador jugador.cpp");
     int N = atoi(argv[1]);
     // arreglo de jugadores en memoria compartida
-    key_t key = 69420;  // Clave para la memoria compartida de los jugadores
+    key_t key = ftok("/tmp", 'J');  // Clave para la memoria compartida de los jugadores
 
     // Crear un segmento de memoria compartida de tamaño N * sizeof(int)
     int shmid = shmget(key, N * sizeof(int), 0666 | IPC_CREAT);
 
     if (shmid == -1) {
-        std::cerr << "Error al crear el arreglo en memoria compartida\n";
+        std::cerr << "Error al crear el arreglo de jugadores en memoria compartida en main\n";
         exit(1);
     }
 
@@ -31,13 +31,13 @@ int main( int argc, char *argv[] ) {
     }
 
     // arreglo de eliminados en memoria compartida
-    key_t keyelm = 666;  // Clave para la memoria compartida de los eliminados
+    key_t keyelm = ftok("/tmp", 'B');  // Clave para la memoria compartida de los eliminados
 
     // Crear un segmento de memoria compartida de tamaño N * sizeof(int)
     int shmidelim = shmget(keyelm, (N-1) * sizeof(int), 0666 | IPC_CREAT);
 
     if (shmidelim == -1) {
-        std::cerr << "Error al crear el arreglo en memoria compartida de los eliminados\n";
+        std::cerr << "Error al crear el arreglo en memoria compartida de los eliminados en main\n";
         exit(1);
     }
 
